@@ -1,6 +1,5 @@
 import { db } from '@/server/db';
 import { customerTable } from '@/server/db/schema';
-import { revalidatePath } from 'next/cache';
 
 export const runtime = 'edge';
 
@@ -25,7 +24,5 @@ export const createCustomerWithCustomId = async (formData: FormData) => {
     console.log('Customer inserted successfully.');
   } catch (error) {
     console.error('Error inserting customer:', error);
-  } finally {
-    revalidatePath('/');
   }
 };
