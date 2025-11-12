@@ -11,5 +11,7 @@ pages_build_output_dir = ".vercel/output/static"
 [[d1_databases]]
 binding = "DB" # i.e. available in your Worker on env.DB
 database_name = "nextjs-d1-drizzle-cloudflare-pages" # When you create your D1 DB, you choose the name
-database_id = "TBA"
+# For Local: Placeholder for local development. like "local". [Warning] -> Empty is occur error.
+# For Production: use actual database_id for production
+database_id = "xxxxxxx" 
 preview_database_id = "DB"
