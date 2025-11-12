@@ -21,8 +21,8 @@ export default env.DB_LOCAL_PATH
       driver: 'd1-http',
       dialect: 'sqlite',
       dbCredentials: {
-        accountId: env.CF_ACCOUNT_ID!,
-        token: env.CF_USER_API_TOKEN!,
+        accountId: env.CLOUDFLARE_ACCOUNT_ID!,
+        token: env.CLOUDFLARE_USER_API_TOKEN!,
         databaseId: env.DB_REMOTE_DATABASE_ID!,
       },
     });
