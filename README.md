@@ -61,6 +61,8 @@ pnpm pages:dev
 
 ⚠️ **Warning #1**: Connecting to the prod remote db on the local code
 [is not supported](https://developers.cloudflare.com/d1/build-with-d1/local-development/).
+`pnpm db:studio:prod` is not work. error is
+`7403: The given account is not valid or is not authorized to access this service`.
 
 ⚠️ **Warning #2**: All pages deployed to Cloudflare Pages run on edge runtime, whereas
 [ISR only works on Nodejs runtime](https://developers.cloudflare.com/pages/framework-guides/nextjs/ssr/supported-features/)
