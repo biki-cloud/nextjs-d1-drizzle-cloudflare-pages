@@ -34,9 +34,15 @@ export default function AuthCallbackPage() {
       const errorParam = searchParams.get('error');
       const errorDescription = searchParams.get('error_description');
 
-      // エラーパラメータがある場合
-      if (errorParam) {
-        setError(`認証エラー: ${errorDescription || errorParam}`);
+      // ハッシュフラグメントを取得（magic link用）
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+      const errorHash = hashParams.get('error');
+      const errorDescriptionHash = hashParams.get('error_description');
+
+      // エラーパラメータがある場合（クエリパラメータまたはハッシュフラグメント）
+      if (errorParam || errorHash) {
+        setError(`認証エラー: ${errorDescription || errorDescriptionHash || errorParam || errorHash}`);
         setProcessing(false);
         setTimeout(() => {
           router.push('/auth');
@@ -45,7 +51,7 @@ export default function AuthCallbackPage() {
       }
 
       if (code) {
-        // PKCEフロー: codeをセッションに交換
+        // PKCEフロー（OAuth）: codeをセッションに交換
         const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
         if (exchangeError) {
@@ -59,8 +65,38 @@ export default function AuthCallbackPage() {
 
         // セッションが正常に設定されたので、ホームにリダイレクト
         router.push('/home');
+      } else if (accessToken) {
+        // Magic Link: ハッシュフラグメントからセッションを設定
+        // Supabaseクライアントが自動的にハッシュフラグメントを処理するため、
+        // getSession()を呼び出すだけでセッションが設定されます
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
+
+        if (sessionError) {
+          setError(`認証エラー: ${sessionError.message}`);
+          setProcessing(false);
+          setTimeout(() => {
+            router.push('/auth');
+          }, 3000);
+          return;
+        }
+
+        if (session) {
+          // セッションが正常に設定されたので、ホームにリダイレクト
+          // ハッシュフラグメントをクリーンアップ
+          window.history.replaceState(null, '', window.location.pathname);
+          router.push('/home');
+        } else {
+          setError('セッションの設定に失敗しました。');
+          setProcessing(false);
+          setTimeout(() => {
+            router.push('/auth');
+          }, 3000);
+        }
       } else {
-        // codeがない場合、既存のセッションを確認
+        // codeもaccess_tokenもない場合、既存のセッションを確認
         const {
           data: { session },
         } = await supabase.auth.getSession();
@@ -69,7 +105,7 @@ export default function AuthCallbackPage() {
           // セッションが既に存在する場合はホームにリダイレクト
           router.push('/home');
         } else {
-          // セッションもcodeもない場合はエラー
+          // セッションもcodeもaccess_tokenもない場合はエラー
           setError('セッションが見つかりませんでした。');
           setProcessing(false);
           setTimeout(() => {
