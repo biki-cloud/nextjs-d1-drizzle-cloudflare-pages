@@ -85,13 +85,11 @@ export default function AuthPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4">
       <h1 className="text-2xl font-bold">ログイン</h1>
-      {message && (
-        <div className="rounded bg-red-100 px-4 py-2 text-red-700">{message}</div>
-      )}
+      {message && <div className="rounded bg-red-100 px-4 py-2 text-red-700">{message}</div>}
       <button
         onClick={handleGoogleLogin}
         disabled={loading}
-        className="flex items-center gap-3 rounded border border-gray-300 bg-white px-6 py-3 text-gray-700 shadow-sm transition-shadow hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-3 rounded border border-gray-300 bg-white px-6 py-3 text-gray-700 shadow-sm transition-shadow hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
           <>
@@ -100,11 +98,7 @@ export default function AuthPage() {
           </>
         ) : (
           <>
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg className="h-5 w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                 fill="#4285F4"
@@ -129,4 +123,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
