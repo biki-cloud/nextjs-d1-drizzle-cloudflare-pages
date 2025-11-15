@@ -15,13 +15,9 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // 認証状態を確認
+    // 認証状態を確認（ログインしていなくても表示）
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        router.push('/auth');
-        return;
-      }
-      setUser(session.user);
+      setUser(session?.user ?? null);
       // 顧客データを取得
       fetchCustomers();
     });
@@ -29,11 +25,7 @@ export default function Home() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) {
-        router.push('/auth');
-      } else {
-        setUser(session.user);
-      }
+      setUser(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
@@ -90,14 +82,29 @@ export default function Home() {
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">ホーム</h1>
-          <p className="text-sm text-gray-600">ログイン中: {user?.email}</p>
+          {user ? (
+            <p className="text-sm text-gray-600">ログイン中: {user.email}</p>
+          ) : (
+            <p className="text-sm text-gray-600">ログインしていません</p>
+          )}
         </div>
-        <button
-          onClick={handleLogout}
-          className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-        >
-          ログアウト
-        </button>
+        <div className="flex gap-2">
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+            >
+              ログアウト
+            </button>
+          ) : (
+            <button
+              onClick={() => router.push('/auth')}
+              className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            >
+              ログイン
+            </button>
+          )}
+        </div>
       </div>
 
       <div>
@@ -106,19 +113,21 @@ export default function Home() {
           {customers.map((customer) => (
             <li key={customer.customerId}>{customer.customerId}</li>
           ))}
-          <li>
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                value={customerId}
-                onChange={(e) => setCustomerId(e.target.value)}
-                placeholder="add a new customer ID"
-              />
-              <button type="submit" className="border-2 border-red-500 p-1">
-                submit
-              </button>
-            </form>
-          </li>
+          {user && (
+            <li>
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  value={customerId}
+                  onChange={(e) => setCustomerId(e.target.value)}
+                  placeholder="add a new customer ID"
+                />
+                <button type="submit" className="border-2 border-red-500 p-1">
+                  submit
+                </button>
+              </form>
+            </li>
+          )}
         </ul>
         <p>end</p>
       </div>
