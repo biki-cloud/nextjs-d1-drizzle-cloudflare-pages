@@ -1,5 +1,6 @@
 import { getCustomers } from '@/server/functions/customers';
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { db } from '@/server/db';
 import { customerTable } from '@/server/db/schema';
 

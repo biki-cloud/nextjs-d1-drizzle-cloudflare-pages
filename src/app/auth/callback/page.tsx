@@ -7,7 +7,6 @@ import { supabase } from '@/lib/supabase';
 export default function AuthCallbackPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const [processing, setProcessing] = useState(true);
 
   useEffect(() => {
     void handleCallback();
@@ -41,9 +40,8 @@ export default function AuthCallbackPage() {
       const errorDescriptionHash = hashParams.get('error_description');
 
       // エラーパラメータがある場合（クエリパラメータまたはハッシュフラグメント）
-      if (errorParam || errorHash) {
-        setError(`認証エラー: ${errorDescription || errorDescriptionHash || errorParam || errorHash}`);
-        setProcessing(false);
+      if (errorParam !== null || errorHash !== null) {
+        setError(`認証エラー: ${errorDescription ?? errorDescriptionHash ?? errorParam ?? errorHash}`);
         setTimeout(() => {
           router.push('/auth');
         }, 3000);
@@ -56,7 +54,6 @@ export default function AuthCallbackPage() {
 
         if (exchangeError) {
           setError(`認証エラー: ${exchangeError.message}`);
-          setProcessing(false);
           setTimeout(() => {
             router.push('/auth');
           }, 3000);
@@ -76,7 +73,6 @@ export default function AuthCallbackPage() {
 
         if (sessionError) {
           setError(`認証エラー: ${sessionError.message}`);
-          setProcessing(false);
           setTimeout(() => {
             router.push('/auth');
           }, 3000);
@@ -90,7 +86,6 @@ export default function AuthCallbackPage() {
           router.push('/home');
         } else {
           setError('セッションの設定に失敗しました。');
-          setProcessing(false);
           setTimeout(() => {
             router.push('/auth');
           }, 3000);
@@ -107,7 +102,6 @@ export default function AuthCallbackPage() {
         } else {
           // セッションもcodeもaccess_tokenもない場合はエラー
           setError('セッションが見つかりませんでした。');
-          setProcessing(false);
           setTimeout(() => {
             router.push('/auth');
           }, 3000);
@@ -116,7 +110,6 @@ export default function AuthCallbackPage() {
     } catch (err) {
       console.error('Callback error:', err);
       setError('エラーが発生しました。');
-      setProcessing(false);
       setTimeout(() => {
         router.push('/auth');
       }, 3000);

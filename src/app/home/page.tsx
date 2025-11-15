@@ -7,6 +7,11 @@ import type { User } from '@supabase/supabase-js';
 
 type Customer = { customerId: string };
 
+type CustomersResponse = {
+  customers?: Customer[];
+  error?: string;
+};
+
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -16,10 +21,10 @@ export default function Home() {
 
   useEffect(() => {
     // 認証状態を確認（ログインしていなくても表示）
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    void supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       // 顧客データを取得
-      fetchCustomers();
+      void fetchCustomers();
     });
 
     const {
@@ -34,8 +39,8 @@ export default function Home() {
   const fetchCustomers = async () => {
     try {
       const response = await fetch('/api/customers');
-      const data = await response.json();
-      setCustomers(data.customers || []);
+      const data: CustomersResponse = await response.json();
+      setCustomers(data.customers ?? []);
     } catch (error) {
       console.error('Failed to fetch customers:', error);
     } finally {
