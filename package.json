@@ -18,6 +18,7 @@
     "pages:deploy": "pnpm setup:prod && pnpm pages:build && pnpm wrangler pages deploy"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.81.1",
     "@tanstack/react-query": "^5.62.10",
     "next": "14.2.21",
     "react": "18.3.1",
