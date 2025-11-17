@@ -38,6 +38,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# opennext
+.open-next
+
 # typescript
 *.tsbuildinfo
 

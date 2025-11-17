@@ -2,7 +2,15 @@
 name = "nextjs-d1-drizzle-cloudflare-pages"
 compatibility_date = "2024-11-11"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".vercel/output/static"
+# For Cloudflare Pages deployment, use pages_build_output_dir
+# For local development with wrangler dev, use main
+pages_build_output_dir = ".open-next"
+main = ".open-next/worker.js"
+
+# Static assets binding for OpenNext adapter
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
 
 # WARNING: When running a production build locally using Wrangler, be aware that the .env file may be omitted. Therefore, ensure that you have the same environment variables in your wrangler.toml file.
 # However, you don't have to include Drizzle environment unless you want to access `drizzle-kit` commands in the deployed code.
